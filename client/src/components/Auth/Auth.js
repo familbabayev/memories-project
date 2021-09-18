@@ -8,22 +8,32 @@ import LockOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import useStyles from './styles';
 import Input from './Input';
 import Icon from './icon';
+import { signin, signup } from '../../actions/auth';
+
+const initialState = { firstName:'', lastName:'', email:'', password:'', confirmPassword:'' }
 
 const Auth = () => {
     const classes = useStyles();
     const [ showPassword, setShowPassword ] = useState(false);
     const [ isSignup, setIsSignup ] = useState(false);
+    const [ formData, setFormData ] = useState(initialState);
     const dispatch = useDispatch();
     const history = useHistory();
 
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
+        if(isSignup) {
+            dispatch(signup(formData, history));
+        } else {
+            dispatch(signin(formData, history));
+        }
     }
 
-    const handleChange = () => {
-
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]:e.target.value });
     }
 
     const switchMode = () => {
@@ -59,8 +69,8 @@ const Auth = () => {
                     <Grid container spacing={2}>
                         { isSignup && (
                             <>
-                                <Input name="firstname" label="First Name" handleChange={handleChange} autofocus half / >
-                                <Input name="secondname" label="Second Name" handleChange={handleChange} half / >
+                                <Input name="firstName" label="First Name" handleChange={handleChange} autofocus half / >
+                                <Input name="lastName" label="Last Name" handleChange={handleChange} half / >
                             </>
                         )}
                         <Input name="email" label="Email Address" handleChange={handleChange} type="email" />
